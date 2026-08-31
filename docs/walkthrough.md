@@ -94,11 +94,23 @@ Each page:
 
 **File:** `redteam/injection.yaml` — **12 automated test cases**
 
-Covers: direct override (ATK-001), system prompt leak (ATK-006), email injection (ATK-002), compliance authority (ATK-004), memo field tampering (ATK-003), CEO impersonation (ATK-008), new-payee fast-follow (ATK-012), context poisoning (ATK-005), velocity shaping (ATK-013), and 3 legitimate baselines.
+We implemented **Promptfoo** to create deterministic, repeatable evaluation suites for our agentic endpoints. Instead of manual testing, Promptfoo runs a custom provider (`ledgerProvider.cjs`) that simulates API interactions against our banking backend. 
+
+Each test case evaluates the defense using robust assertions:
+- **`javascript` assertions**: Validates that the agent selected the correct tool (e.g., `transferFunds` vs `getBalance`) and that the tool arguments were not tampered with.
+- **`contains` assertions**: Ensures the final LLM output correctly enforces the policy gate (e.g., ensuring it returns "blocked by security policy").
+
+It covers: direct override (ATK-001), system prompt leak (ATK-006), email injection (ATK-002), compliance authority (ATK-004), memo field tampering (ATK-003), CEO impersonation (ATK-008), new-payee fast-follow (ATK-012), context poisoning (ATK-005), velocity shaping (ATK-013), and 3 legitimate baselines.
 
 ```powershell
 npm run redteam   # runs the full suite
 ```
+
+### 2.4 Garak Integration for Novel Fuzzing (Research)
+
+While Promptfoo handles deterministic regression testing, our architecture is designed to integrate with **Garak** (LLM vulnerability scanner) to discover novel, unforeseen attack variations. By pointing Garak at our `/rest/attack-sim` endpoint, we can fuzz the agent with thousands of generated prompt variations (using techniques like adversarial suffixes or tree-of-attacks). 
+
+When Garak discovers a successful bypass, we extract those attack patterns and feed them back into the `generate/data_builder.py` script to retrain the LightGBM defense classifier. This creates an automated immune system that hardens against zero-day GenAI threats.
 
 ---
 
