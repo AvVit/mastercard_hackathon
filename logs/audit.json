@@ -1,0 +1,21 @@
+{
+    "keepSettings": {
+        "type": 1,
+        "amount": 2
+    },
+    "auditFilename": "logs/audit.json",
+    "hashType": "md5",
+    "extension": "",
+    "files": [
+        {
+            "date": 1787936026223,
+            "name": "C:\\Users\\Sweety gupta\\Desktop\\New folder (6)\\juice-shop\\logs\\access.log.2026-08-28",
+            "hash": "f8a30e3490ca20452fbbf828bdb12b26"
+        },
+        {
+            "date": 1787942122961,
+            "name": "C:\\Users\\Sweety gupta\\Desktop\\New folder (6)\\juice-shop\\logs\\access.log.2026-08-29",
+            "hash": "3ed2a3cdd064520b9a4805e2e13b7dd4"
+        }
+    ]
+}

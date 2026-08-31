@@ -1,0 +1,10 @@
+node_modules/
+build/
+.angular/
+dist/
+*.log
+data/agentic_transactions.json
+defend/model/*.pkl
+.env
+.vscode/
+.idea/
