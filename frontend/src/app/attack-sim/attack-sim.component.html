@@ -23,7 +23,7 @@
         <button class="reset-btn" (click)="reset()">Reset</button>
       </div>
 
-      <div class="messages" aria-live="polite">
+      <div #messagesPanel class="messages" aria-live="polite">
         @for (msg of messages; track $index) {
           <article class="message" [class.user-msg]="msg.role === 'user'" [class.attack-turn]="msg.isAttackTurn">
             <span class="msg-role">

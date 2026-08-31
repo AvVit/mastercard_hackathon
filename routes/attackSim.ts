@@ -168,6 +168,7 @@ export function attackSim () {
         model: provider(config.get<string>('application.chatBot.model')),
         system: systemPrompt,
         messages,
+        tools,
         stopWhen: stepCountIs(1),
         maxRetries: config.get<number>('application.chatBot.llmMaxRetries')
       })

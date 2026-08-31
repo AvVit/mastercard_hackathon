@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common'
 import { RouterModule } from '@angular/router'
@@ -34,6 +34,7 @@ interface Message {
 })
 export class AttackSimComponent implements OnInit {
   @Input() scenario!: AttackScenario
+  @ViewChild('messagesPanel') messagesPanel?: ElementRef<HTMLElement>
 
   prompt = ''
   busy = false
@@ -41,11 +42,14 @@ export class AttackSimComponent implements OnInit {
   messages: Message[] = []
   injectNextTurn = false
 
+  constructor (private readonly changeDetectorRef: ChangeDetectorRef) {}
+
   ngOnInit (): void {
     this.messages = [{
       role: 'assistant',
       content: `Simulation ready. I am the AI agent for the ${this.scenario.title} scenario. How can I assist you?`
     }]
+    this.scrollMessagesToBottom()
   }
 
   usePrompt (p: string): void { this.prompt = p }
@@ -63,9 +67,12 @@ export class AttackSimComponent implements OnInit {
     const isAttack = this.injectNextTurn
     this.injectNextTurn = false
     this.messages = [...this.messages, { role: 'user', content, isAttackTurn: isAttack }]
+    const requestMessages = this.messages.map(message => ({ role: message.role, content: message.content }))
     this.prompt = ''
     this.busy = true
     this.error = ''
+    this.changeDetectorRef.detectChanges()
+    this.scrollMessagesToBottom()
 
     try {
       const res = await fetch('/rest/attack-sim', {
@@ -74,7 +81,7 @@ export class AttackSimComponent implements OnInit {
         credentials: 'same-origin',
         body: JSON.stringify({
           attackId: this.scenario.attackId,
-          messages: [{ role: 'user', content }],
+          messages: requestMessages,
           confirmTransfer: /\b(yes|confirm|approve|send it)\b/i.test(content)
         })
       })
@@ -93,6 +100,8 @@ export class AttackSimComponent implements OnInit {
       this.error = e instanceof Error ? e.message : 'Agent could not respond.'
     } finally {
       this.busy = false
+      this.changeDetectorRef.detectChanges()
+      this.scrollMessagesToBottom()
     }
   }
 
@@ -103,11 +112,22 @@ export class AttackSimComponent implements OnInit {
     }]
     this.prompt = ''
     this.error = ''
+    this.changeDetectorRef.detectChanges()
+    this.scrollMessagesToBottom()
   }
 
   scoreColor (score: number): string {
     if (score >= 0.8) return '#a43f33'
     if (score >= 0.6) return '#c87825'
     return '#27804e'
+  }
+
+  private scrollMessagesToBottom (): void {
+    setTimeout(() => {
+      const panel = this.messagesPanel?.nativeElement
+      if (panel) {
+        panel.scrollTop = panel.scrollHeight
+      }
+    })
   }
 }
