@@ -1,7 +1,7 @@
 # AI Defense Lab for Payment Security
 ### Mastercard Innovation Challenge 2026 · GFF Mumbai
 
-> **Build the attack. Build the defense. Close the loop.**
+
 
 This repository implements a closed-loop red-team / blue-team AI system for GenAI-powered payment fraud — built on top of a forked [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) as the vulnerable payment target.
 
