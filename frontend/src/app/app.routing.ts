@@ -82,6 +82,11 @@ const loadAboutComponent = async () => {
 // vuln-code-snippet start adminSectionChallenge scoreBoardChallenge web3SandboxChallenge
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'attack-hub',
+    pathMatch: 'full'
+  },
+  {
     path: 'agentic-banking',
     component: AgenticBankingComponent
   },
